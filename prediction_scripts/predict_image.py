@@ -1,3 +1,5 @@
+# Copy to models/research/object_detection
+
 import numpy as np
 import argparse
 import os

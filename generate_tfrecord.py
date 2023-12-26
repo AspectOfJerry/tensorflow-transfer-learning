@@ -1,3 +1,4 @@
+# Copy to: models/research/object_detection
 # based on https://github.com/datitran/raccoon_dataset/blob/master/generate_tfrecord.py
 
 from __future__ import division
@@ -27,15 +28,15 @@ FLAGS = flags.FLAGS
 
 ''' 
 *************************************************************************
-Make sure to edit this method to match the labels you made with labelImg!
+Make sure to edit this method to match your labels!
 *************************************************************************
 '''
 
 
 def class_text_to_int(row_label):
-    if row_label == 'cone':
+    if row_label == "cone":
         return 1
-    elif row_label == 'cube':
+    elif row_label == "cube":
         return 2
     else:
         return None
@@ -105,6 +106,6 @@ def main(_):
 if __name__ == '__main__':
     tf.app.run()
 
-# commands:
+# Commands:
 # python generate_tfrecord.py --csv_input=images/test_labels.csv --image_dir=images/test --output_path=test.record
 # python generate_tfrecord.py --csv_input=images/train_labels.csv --image_dir=images/train --output_path=train.record

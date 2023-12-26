@@ -1,4 +1,4 @@
-# Move this file to models/research/object_detection/
+# Copy to models/research/object_detection
 # based on https://github.com/datitran/raccoon_dataset/blob/master/xml_to_csv.py
 
 import os
@@ -32,7 +32,7 @@ def main():
     for folder in ["train", "test"]:
         image_path = os.path.join(os.getcwd(), ("images/" + folder))
         xml_df = xml_to_csv(image_path)
-        xml_df.to_csv(("images/" + folder + "_labels.csv"), index=None)
+        xml_df.to_csv(("images/" + folder + "_labels.csv"), index=None)  # <-- image folder name
     print("Successfully converted xml to csv.")
 
 
