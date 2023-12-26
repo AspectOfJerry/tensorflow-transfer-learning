@@ -1,6 +1,9 @@
 # Installation
 
 - Recommended Python version: 3.9
+- Resources:
+    - [Youtube Tutorial](https://youtu.be/rRwflsS67ow?list=PLAs-3cqyNbIjqaTLHNSu2g4kpaw6TGCud)
+    - [Tensorflow Model Zoo](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf2_detection_zoo.md)
 
 ### Clone Tensorflow Models repository
 
@@ -92,9 +95,89 @@ Ran 24 tests in 13.296s
 OK (skipped=1)
 ```
 
-And you're done 🎉!
+And you're done (for this part) 🎉!
 
 # Setup
+
+### Download the model
+
+Install dependencies:
+
+```bash
+pip install wget
+```
+
+Copy the `model_downloader.py` file to the `models/research/object_detection` folder and run the following command:
+
+```bash
+cd models/research/object_detection  (if not already in the folder)
+python model_downloader.py
+```
+
+You should see a folder with the model's name in the `models/research/object_detection` folder.
+
+### (Optional) Choose a different model
+
+Visit the [Tensorflow Model Zoo](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf2_detection_zoo.md)
+
+Change the `MODEL_FILE` variable in the `model_downloader.py` file to the model you want to use. Make sure to double-check the URL.
+
+## Test the model
+
+### Install dependencies
+
+```bash
+pip install opencv-contrib-python
+```
+
+If not already installed (`pip list`), install the following dependencies:
+
+```bash
+pip install opencv-python
+pip install opencv-python-headless
+```
+
+For all the following commands, replace:
+
+- the `-m` parameter with the name of the model you downloaded if you chose a different model.
+- the `-l` parameter with the path to the label map file of the model you downloaded if you chose a different model.
+
+### Predict on the included test images
+
+Copy the `predict_image.py` file to the `models/research/object_detection` folder and run the following command:
+
+```bash
+cd models/research/object_detection  (if not already in the folder)
+python .\predict_image.py -m ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8\saved_model -l .\data\mscoco_label_map.pbtxt -i .\test_images
+```
+
+The output should be in the `models/research/object_detection/output` folder.
+
+### Predict on webcam
+
+Copy the `predict_webcam.py` file to the `models/research/object_detection` folder and run the following command:
+
+```bash
+cd models/research/object_detection  (if not already in the folder)
+python .\predict_webcam.py -m ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8\saved_model -l .\data\mscoco_label_map.pbtxt
+```
+
+### Predict on a video
+
+Copy the `predict_video.py` file to the `models/research/object_detection` folder and run the following command:
+Replace `video.mp4` with the name of the video you want to use.
+Move your video to the `models/research/object_detection` folder.
+
+```bash
+cd models/research/object_detection  (if not already in the folder)
+python .\predict_video.py -m ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8\saved_model -l .\data\mscoco_label_map.pbtxt -v .\video.mp4
+```
+
+And you're done (for this part) 🎉!
+
+# Custom model/transfer learning
+
+### Prepare the dataset
 
 Create a folder called `images` in the `models/research/object_detection` folder. Then, copy the custom dataset's `test` and `train` folders into the `images`
 folder.
@@ -107,4 +190,3 @@ Copy the `xml_to_csv.py` file to the `models/research/object_detection` folder a
 cd models/research/object_detection  (if not already in the folder)
 python xml_to_csv.py
 ```
-
