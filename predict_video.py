@@ -55,8 +55,11 @@ def run_inference_for_single_image(model, image):
 
 
 def run_inference(model, category_index, cap):
-    while True:
+    while cap.isOpened():
         ret, image_np = cap.read()
+        if not ret:
+            break
+
         # Actual detection.
         output_dict = run_inference_for_single_image(model, image_np)
         # Visualization of the results of a detection.
@@ -80,13 +83,15 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Detect objects inside webcam videostream')
     parser.add_argument('-m', '--model', type=str, required=True, help='Model Path')
     parser.add_argument('-l', '--labelmap', type=str, required=True, help='Path to Labelmap')
+    parser.add_argument('-v', '--video_path', type=str, required=True, help='Path to video.')
     args = parser.parse_args()
 
     detection_model = load_model(args.model)
     category_index = label_map_util.create_category_index_from_labelmap(args.labelmap, use_display_name=True)
 
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(args.video_path)
     run_inference(detection_model, category_index, cap)
 
 # Command to run:
-# python .\predict_webcam.py -m ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8\saved_model -l .\data\mscoco_label_map.pbtxt
+# python .\predict_video.py -m ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8\saved_model -l .\data\mscoco_label_map.pbtxt -v .\video.mp4
+# python .\predict_video.py -m inference_graph\saved_model -l label_map.pbtxt -v .\video.mp4

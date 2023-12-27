@@ -1,4 +1,4 @@
-# Move this file to models/research
+# Copy to models/research
 
 import os
 import sys

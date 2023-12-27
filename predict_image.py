@@ -136,4 +136,5 @@ if __name__ == '__main__':
     run_inference(detection_model, category_index, args.image_path)
 
 # Command to run:
-#  python .\predict_image.py -m ssd_mobilenet_v2_320x320_coco17_tpu-8\saved_model -l .\data\mscoco_label_map.pbtxt -i .\test_images
+# python .\predict_image.py -m ssd_mobilenet_v2_320x320_coco17_tpu-8\saved_model -l .\data\mscoco_label_map.pbtxt -i .\test_images
+# python .\predict_image.py -m inference_graph\saved_model -l label_map.pbtxt -i .\images\test

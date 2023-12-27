@@ -1,11 +1,14 @@
 # Installation
 
-- Recommended Python version: 3.9
+- Python version: 3.9
 - Resources:
     - [Youtube Tutorial 1/4](https://youtu.be/rRwflsS67ow?list=PLAs-3cqyNbIjqaTLHNSu2g4kpaw6TGCud)
     - [Youtube Tutorial 2/4](https://youtu.be/O6BsjQat4aE?list=PLAs-3cqyNbIjqaTLHNSu2g4kpaw6TGCud)
     - [Youtube Tutorial 3/4](https://youtu.be/8ktcGQ-XreQ?list=PLAs-3cqyNbIjqaTLHNSu2g4kpaw6TGCud)
     - [Tensorflow Model Zoo](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf2_detection_zoo.md)
+
+To train on a NVIDIA GPU, you will need to install CUDA and cuDNN. I won't cover this in this guide (maybe later).
+You can also use Google Colab to train your model (I won't cover this either).
 
 ### Clone Tensorflow Models repository
 
@@ -34,7 +37,7 @@ Restart your IDE/terminal and follow the next steps.
 Copy the `use_protobuf.py` file to the `models/research` folder and run the following command:
 
 ```bash
-cd models/research  (if not already in)
+cd models/research
 python use_protobuf.py object_detection/protos protoc
 ```
 
@@ -43,7 +46,7 @@ python use_protobuf.py object_detection/protos protoc
 Copy the `setup.py` file from `models/research/object_detection/packages/tf2` to `models/research/` and run the following command:
 
 ```bash
-cd models/research  (if not already in)
+cd models/research
 python -m pip install .
 ```
 
@@ -72,13 +75,14 @@ ImportError: cannot import name 'builder' from 'google.protobuf.internal' (C:<..
 
 Here's a clever fix from [Stack Overflow](https://stackoverflow.com/questions/71759248/importerror-cannot-import-name-builder-from-google-protobuf-internal):
 
-1. Install the latest protobuf version:
+1. Install the latest protobuf version and ignore dependency conflicts:
 
 ```bash
 pip install --upgrade protobuf
 ```
 
-2. Copy the `builder.py` file from `...\Lib\site-packages\google\protobuf\internal` to another folder (e.g. your desktop).
+2. Copy the `builder.py` file from `...\Lib\site-packages\google\protobuf\internal` to another folder (e.g. your desktop). If you are using PyCharm, you
+   might need to reload the folder from disk to see the new files.
 3. Re-install a compatible version of protobuf for this project (`3.19.6`):
 
 ```bash
@@ -89,8 +93,8 @@ pip install protobuf==3.19.6 --force-reinstall
 
 ### Test the installation
 
-```
-cd models/research/object_detection/builders  (if not already in the folder)
+```bash
+cd models/research/object_detection/builders
 python model_builder_tf2_test.py
 ```
 
@@ -119,7 +123,7 @@ pip install wget
 Copy the `model_downloader.py` file to the `models/research/object_detection` folder and run the following command:
 
 ```bash
-cd models/research/object_detection  (if not already in)
+cd models/research/object_detection
 python model_downloader.py
 ```
 
@@ -131,7 +135,7 @@ Visit the [Tensorflow Model Zoo](https://github.com/tensorflow/models/blob/maste
 
 Change the `MODEL_FILE` variable in the `model_downloader.py` file to the model you want to use. Make sure to double-check the URL.
 
-## (Optional) Test the model
+## (Optional) Test the setup
 
 ### Install dependencies
 
@@ -151,25 +155,24 @@ For all the following commands, after copying the files, replace:
 - the `-m` parameter with the name of the model you downloaded if you chose a different model.
 - the `-l` parameter with the path to the label map file of the model you downloaded if you chose a different model.
 
-The scripts are located in the `prediction_scripts` folder.
-
 ### Predict on the included test images
 
+Create a folder called `output` in the `models/research/object_detection` folder.
 Copy the `predict_image.py` file to the `models/research/object_detection` folder and run the following command:
 
 ```bash
-cd models/research/object_detection  (if not already in)
+cd models/research/object_detection
 python .\predict_image.py -m ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8\saved_model -l .\data\mscoco_label_map.pbtxt -i .\test_images
 ```
 
-The output should be in the `models/research/object_detection/output` folder.
+The output should be in the `models/research/object_detection/output` folder (make sure you created the `output` folder).
 
 ### Predict on webcam
 
 Copy the `predict_webcam.py` file to the `models/research/object_detection` folder and run the following command:
 
 ```bash
-cd models/research/object_detection  (if not already in)
+cd models/research/object_detection
 python .\predict_webcam.py -m ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8\saved_model -l .\data\mscoco_label_map.pbtxt
 ```
 
@@ -180,7 +183,7 @@ Replace `video.mp4` with the name of the video you want to use.
 Move your video to the `models/research/object_detection` folder.
 
 ```bash
-cd models/research/object_detection  (if not already in)
+cd models/research/object_detection
 python .\predict_video.py -m ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8\saved_model -l .\data\mscoco_label_map.pbtxt -v .\video.mp4
 ```
 
@@ -200,7 +203,7 @@ folder. The custom dataset is provided by me for private projects.
 Copy the `xml_to_csv.py` file to the `models/research/object_detection` folder and run the following command:
 
 ```bash
-cd models/research/object_detection  (if not already in)
+cd models/research/object_detection
 python xml_to_csv.py
 ```
 
@@ -212,7 +215,7 @@ Make sure to take a look at the `generate_tfrecord.py` file and apply the necess
 Run the following commands (you might need to change the paths):
 
 ```bash
-cd models/research/object_detection  (if not already in)
+cd models/research/object_detection
 python generate_tfrecord.py --csv_input=images/test_labels.csv --image_dir=images/test --output_path=test.record
 python generate_tfrecord.py --csv_input=images/train_labels.csv --image_dir=images/train --output_path=train.record
 ```
@@ -233,7 +236,7 @@ item {
     id: 2
     name: "cube"
 }
-(add more if you need, make sure the names and ids are the same as the ones in generate_tfrecord.py)
+add more if you need, make sure the names and ids are the same as the ones in generate_tfrecord.py
 ```
 
 ## Edit model config
@@ -257,15 +260,89 @@ Open the file and change the following values (in this case, I'm using the `ssd_
 | 194  | `eval_input_reader.label_map_path`                     | The label map file (e.g. `label_map.pbtxt`)                                                                                                         |
 | 198  | `eval_input_reader.tf_record_input_reader.input_path`  | Test TFRecord file (e.g. `test.record`)                                                                                                             |
 
+### (Optional) Tensorboard
+
+To monitor the training process, run the following command in a new terminal in the same environment:
+
+```bash
+cd models/research/object_detection
+tensorboard --logdir=training --bind_all
+```
+
+- `--logdir` is the path to the folder where the model and checkpoints are saved.
+- `--bind_all` is optional, it will allow you to access Tensorboard from other devices in your network.
+
+Then, open your browser and go to <http://localhost:6006/>
+
+You are now ready to train your model!
+
 ### Train the model
 
 To start training, run the following command:
 
 ```bash
-cd models/research/object_detection  (if not already in)
+cd models/research/object_detection
 python model_main_tf2.py --model_dir=training --pipeline_config_path=ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8.config --alsologtostderr
 ```
 
 - `--model_dir` is the path to the folder where the model and checkpoints will be saved.
 - `--pipeline_config_path` is the path to the model's config file (e.g. `ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8.config`)
 - `--alsologtostderr` is optional, it will print the logs to the console.
+
+### (Optional) Resume training
+
+Need a break during training? No problem! To resume training, modify the following value in your configuration file (in this case, I'm using the
+`ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8` model)
+
+| Line | Property                            | To                                                                                                                                                         |
+|------|-------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| 142  | `train_config.fine_tune_checkpoint` | Path to the model's latest checkpoint (e.g. `ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8/checkpoint/ckpt-1`). remove `.index`, use forward slashes (`/`) |
+
+### Export the model
+
+To export the inference graph, run the following command:
+
+```bash
+python exporter_main_v2.py --trained_checkpoint_dir=training  --pipeline_config_path=ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8.config --output_directory inference_graph
+```
+
+- `--trained_checkpoint_dir` is the path to the folder where the model and checkpoints are saved.
+- `--pipeline_config_path` is the path to the model's config file (e.g. `ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8.config`)
+- `--output_directory` is the path to the folder where the inference graph will be saved.
+
+### Test the model
+
+- Change the `-m` parameter with the name of the model you downloaded if you chose a different model.
+
+### Predict on images
+
+Create a folder called `output` in the `models/research/object_detection` folder.
+Copy the `predict_image.py` file to the `models/research/object_detection` folder and run the following command in `models/research/object_detection`:
+
+- `-i` will predict on all the images in the folder. If you don't use it, you will have to specify the image path with the `-p` parameter.
+
+```bash
+python .\predict_image.py -m inference_graph\saved_model -l label_map.pbtxt -i .\images\test
+```
+
+The output should be in the `models/research/object_detection/output` folder (make sure you created the `output` folder).
+
+### Predict on webcam
+
+Copy the `predict_webcam.py` file to the `models/research/object_detection` folder and run the following command in `models/research/object_detection`:
+
+```bash
+python .\predict_webcam.py -m inference_graph\saved_model -l label_map.pbtxt
+```
+
+### Predict on a video
+
+Copy the `predict_video.py` file to the `models/research/object_detection` folder and run the following command in `models/research/object_detection`:
+Replace `video.mp4` with the name of the video you want to use.
+Move your video to the `models/research/object_detection` folder.
+
+```bash
+python .\predict_video.py -m inference_graph\saved_model -l label_map.pbtxt -v .\video.mp4
+```
+
+Congrats, you're done 🎉!

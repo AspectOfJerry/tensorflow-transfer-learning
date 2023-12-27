@@ -1,4 +1,4 @@
-# Copy to: models/research/object_detection
+# Copy to models/research/object_detection
 # based on https://github.com/datitran/raccoon_dataset/blob/master/generate_tfrecord.py
 
 from __future__ import division

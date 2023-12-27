@@ -1,3 +1,4 @@
+# Copy to models/research/object_detection
 import wget
 
 MODEL_FILE = "ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8.tar.gz"
