@@ -7,7 +7,7 @@
     - [Youtube Tutorial 3/4](https://youtu.be/8ktcGQ-XreQ?list=PLAs-3cqyNbIjqaTLHNSu2g4kpaw6TGCud)
     - [Tensorflow Model Zoo](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf2_detection_zoo.md)
 
-To train on a NVIDIA GPU, you will need to install CUDA and cuDNN. I won't cover this in this guide (maybe later).
+To train on an NVIDIA GPU, you will need to install CUDA and cuDNN. I won't cover this in this guide (maybe later).
 You can also use Google Colab to train your model (I won't cover this either).
 
 ### Clone Tensorflow Models repository
@@ -216,8 +216,8 @@ Run the following commands (you might need to change the paths):
 
 ```bash
 cd models/research/object_detection
-python generate_tfrecord.py --csv_input=images/test_labels.csv --image_dir=images/test --output_path=test.record
 python generate_tfrecord.py --csv_input=images/train_labels.csv --image_dir=images/train --output_path=train.record
+python generate_tfrecord.py --csv_input=images/test_labels.csv --image_dir=images/test --output_path=test.record
 ```
 
 The `test.record` and `train.record` files should be in the `models/research/object_detection` folder.
@@ -248,17 +248,17 @@ folder.
 
 Open the file and change the following values (in this case, I'm using the `ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8` model)
 
-| Line | Property                                               | To                                                                                                                                                  |
-|------|--------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
-| 13   | `model.ssd.num_classes`                                | Number of classes in your dataset                                                                                                                   |
-| 142  | `train_config.fine_tune_checkpoint`                    | Path to the model's checkpoint (e.g. `ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8/checkpoint/ckpt-0`). remove `.index`, use forward slashes (`/`) |
-| 143  | `train_config.fine_tune_checkpoint_type`               | `detection`                                                                                                                                         |
-| 144  | `train_config.batch_size`                              | Your batch size (depending on your specs). (e.g. `8`)                                                                                               |
-| 149  | `train_config.num_steps`                               | Number of steps to train the model (you can leave at default for now) (e.g. `50000`)                                                                |
-| 182  | `train_input_reader.label_map_path`                    | The label map file (e.g. `label_map.pbtxt`)                                                                                                         |
-| 184  | `train_input_reader.tf_record_input_reader.input_path` | Train TFRecord file (e.g. `train.record`)                                                                                                           |
-| 194  | `eval_input_reader.label_map_path`                     | The label map file (e.g. `label_map.pbtxt`)                                                                                                         |
-| 198  | `eval_input_reader.tf_record_input_reader.input_path`  | Test TFRecord file (e.g. `test.record`)                                                                                                             |
+| Line | Property                                               | To                                                                                                                                                  | Tested |
+|------|--------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|--------|
+| 13   | `model.ssd.num_classes`                                | Number of classes in your dataset                                                                                                                   | 2      |
+| 142  | `train_config.fine_tune_checkpoint`                    | Path to the model's checkpoint (e.g. `ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8/checkpoint/ckpt-0`). remove `.index`, use forward slashes (`/`) | -      |
+| 143  | `train_config.fine_tune_checkpoint_type`               | `detection`                                                                                                                                         | 16     |
+| 144  | `train_config.batch_size`                              | Your batch size (depending on your specs). (e.g. `8`)                                                                                               | 3600   |
+| 149  | `train_config.num_steps`                               | Number of steps to train the model (you can decrease it a bit) (e.g. `5000`)                                                                        | -      |
+| 182  | `train_input_reader.label_map_path`                    | The label map file (e.g. `label_map.pbtxt`)                                                                                                         | -      |
+| 184  | `train_input_reader.tf_record_input_reader.input_path` | Train TFRecord file (e.g. `train.record`)                                                                                                           | -      |
+| 194  | `eval_input_reader.label_map_path`                     | The label map file (e.g. `label_map.pbtxt`)                                                                                                         | -      |
+| 198  | `eval_input_reader.tf_record_input_reader.input_path`  | Test TFRecord file (e.g. `test.record`)                                                                                                             | -      |
 
 ### (Optional) Tensorboard
 
@@ -317,11 +317,12 @@ python exporter_main_v2.py --trained_checkpoint_dir=training  --pipeline_config_
 ### Predict on images
 
 Create a folder called `output` in the `models/research/object_detection` folder.
-Copy the `predict_image.py` file to the `models/research/object_detection` folder and run the following command in `models/research/object_detection`:
+Copy the `predict_image.py` file to the `models/research/object_detection` folder and run the following command:
 
 - `-i` will predict on all the images in the folder. If you don't use it, you will have to specify the image path with the `-p` parameter.
 
 ```bash
+cd models/research/object_detection
 python .\predict_image.py -m inference_graph\saved_model -l label_map.pbtxt -i .\images\test
 ```
 
@@ -329,19 +330,21 @@ The output should be in the `models/research/object_detection/output` folder (ma
 
 ### Predict on webcam
 
-Copy the `predict_webcam.py` file to the `models/research/object_detection` folder and run the following command in `models/research/object_detection`:
+Copy the `predict_webcam.py` file to the `models/research/object_detection` folder and run the following command:
 
 ```bash
+cd models/research/object_detection
 python .\predict_webcam.py -m inference_graph\saved_model -l label_map.pbtxt
 ```
 
 ### Predict on a video
 
-Copy the `predict_video.py` file to the `models/research/object_detection` folder and run the following command in `models/research/object_detection`:
+Copy the `predict_video.py` file to the `models/research/object_detection` folder and run the following command:
 Replace `video.mp4` with the name of the video you want to use.
 Move your video to the `models/research/object_detection` folder.
 
 ```bash
+cd models/research/object_detection
 python .\predict_video.py -m inference_graph\saved_model -l label_map.pbtxt -v .\video.mp4
 ```
 
