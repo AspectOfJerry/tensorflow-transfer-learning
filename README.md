@@ -10,6 +10,12 @@
 To train on an NVIDIA GPU, you will need to install CUDA and cuDNN. I won't cover this in this guide (maybe later).
 You can also use Google Colab to train your model (I won't cover this either).
 
+It is recommended to use a virtual environment for this project.
+
+```bash
+python -m venv venv
+```
+
 ### Clone Tensorflow Models repository
 
 ```bash
@@ -309,6 +315,24 @@ python exporter_main_v2.py --trained_checkpoint_dir=training  --pipeline_config_
 - `--trained_checkpoint_dir` is the path to the folder where the model and checkpoints are saved.
 - `--pipeline_config_path` is the path to the model's config file (e.g. `ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8.config`)
 - `--output_directory` is the path to the folder where the inference graph will be saved.
+
+### (Optional) Convert the model to TFLite
+
+Before you can convert the model to TFLite, you need to convert it to a SavedModel:
+
+```bash
+cd models/research/object_detection
+python export_tflite_graph_tf2.py --pipeline_config_path=ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8.config --trained_checkpoint_dir=training --output_directory=inference_graph/exporting
+```
+
+Then, you can convert the model to TFLite:
+
+```bash
+cd models/research/object_detection
+tflite_convert --saved_model_dir=inference_graph/exporting/saved_model --output_file=inference_graph/exporting/model.tflite --input_shapes=1,756,756,3 --input_arrays=normalized_input_image_tensor --output_arrays="TFLite_Detection_PostProcess","TFLite_Detection_PostProcess:1","TFLite_Detection_PostProcess:2","TFLite_Detection_PostProcess:3" --inference_type=FLOAT --allow_custom_ops=True
+```
+
+- Adjust the `--input_shapes` parameter to your needs (should be the dimensions of your training images).
 
 ### Test the model
 
